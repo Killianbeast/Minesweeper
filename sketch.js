@@ -7,15 +7,18 @@ var attemptsLeft = 3;
 var bombsTotal = 60;
 var bombLocations = [];
 
+let bombTileHit;
+let safeTile;
+
+function preload() {
+  soundFormats('mp3');
+  bombTileHit = loadSound("sounds/Bomb Hit");
+  safeTile = loadSound("/sounds/Safe Tile");
+}
+
 function setup() {
   createCanvas(400, 400);
 
-  //bombLocations.push("0-0");
-  //bombLocations.push("0-1");
-  //bombLocations.push("0-2");
-  //bombLocations.push("0-3");
-  //bombLocations.push("0-4");
-  //bombLocations.push("0-5");
   setBombLocations();
   console.log(bombLocations);
 
@@ -40,15 +43,28 @@ function draw() {
 
 function displayTile() {
   let tile = this;
+  let xy = tile.id().split("-");
+  let x = parseInt(xy[0]);
+  let y = parseInt(xy[1]);
+  
   if (bombLocations.includes(tile.id())) {
-    console.log(`Bomb hit at ${tile.id()}!`);
     attemptsLeft--;
-    console.log(attemptsLeft);
+    board[x][y].addClass("bomb-clicked");
+    bombTileHit.play();
+    
     if (attemptsLeft <= 0) {
       console.log("Game Over!");
     }
-  } else {
-      console.log( `Tile ID: ${tile.id()} clicked!`);
+  } 
+  else {
+    board[x][y].addClass('tile-clicked')
+    safeTile.play();
+    let bombsFound = checkTiles(x,y);
+
+    if (bombsFound > 0) {
+      board[x][y].addClass("x" + bombsFound.toString());
+    }
+
   }
 
 }
@@ -63,6 +79,37 @@ function setBombLocations() {
       bombLocations.push(bombloc);
       bombsTotal--;
     }
+  }
+}
 
+function checkTiles(r,c) {
+  let totalMines = 0;
+
+  totalMines += isTileMine(r - 1, c - 1);
+  totalMines += isTileMine(r, c - 1);
+  totalMines += isTileMine(r + 1, c - 1);
+
+  totalMines += isTileMine(r - 1, c);
+  totalMines += isTileMine(r + 1, c);
+
+  totalMines += isTileMine(r - 1, c + 1);
+  totalMines += isTileMine(r, c + 1);
+  totalMines += isTileMine(r + 1, c + 1);
+
+  console.log(`Total bombs: ${totalMines}`);
+
+  if (totalMines > 0) {
+    return totalMines;
+  } else {
+    board[r][c].addClass("tile-clicked");
+  }
+
+}
+
+function isTileMine(r,c) {
+  if (bombLocations.includes(r.toString() + "-" + c.toString())) {
+    return 1;
+  } else {
+    return 0;
   }
 }
