@@ -59,10 +59,10 @@ function displayTile() {
   else {
     board[x][y].addClass('tile-clicked')
     safeTile.play();
-    let bombsFound = checkTiles(x,y);
+    let adjTiles = checkTiles(x,y);
 
-    if (bombsFound > 0) {
-      board[x][y].addClass("x" + bombsFound.toString());
+    if (adjTiles > 0) {
+      board[x][y].addClass("x" + adjTiles.toString());
     }
 
   }
@@ -83,6 +83,11 @@ function setBombLocations() {
 }
 
 function checkTiles(r,c) {
+  if (!board[r][c].hasClass("tile-clicked")) {
+    return;
+  }
+  
+  board[r][c].addClass("tile-clicked");
   let totalMines = 0;
 
   totalMines += isTileMine(r - 1, c - 1);
@@ -97,12 +102,7 @@ function checkTiles(r,c) {
   totalMines += isTileMine(r + 1, c + 1);
 
   console.log(`Total bombs: ${totalMines}`);
-
-  if (totalMines > 0) {
-    return totalMines;
-  } else {
-    board[r][c].addClass("tile-clicked");
-  }
+  return totalMines;
 
 }
 
