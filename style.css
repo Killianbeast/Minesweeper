@@ -1,10 +1,13 @@
 html, body {
   font-family: 'Courier New', Courier, monospace;
+  display: flex;
+  background-image: url("images/background.png");
+  background-size: cover;
 }
 
 
 canvas {
-  display: inline-block;
+  position: absolute;
 }
 
 #board {
@@ -29,6 +32,25 @@ canvas {
 
 }
 
+#flag-marker {
+  width: 100px;
+  height: 100px;
+  background-color: slategray;
+
+  top: 5px;
+  left: 5px;
+  display: flex;
+}
+
+#flag-marker div {
+  width: 100px;
+  height: 100px;
+
+  display: flex;
+  justify-content: center;
+  content: url("images/marked-bomb.png");
+}
+
 .tile-clicked {
   background-color: lightgray;
 }
@@ -36,6 +58,10 @@ canvas {
 .bomb-clicked {
   background-color: red;
   content: url("images/bomb.png")
+}
+
+.flag-tile {
+  content: url("images/marked-bomb.png")
 }
 
 .x1 {

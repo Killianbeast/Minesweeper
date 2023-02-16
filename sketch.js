@@ -6,21 +6,37 @@ var attemptsLeft = 3;
 
 var bombsTotal = 60;
 var bombLocations = [];
+var bombsMarked = 0;
+
+let flagMode = false;
+
+let gameTimer;
 
 let bombTileHit;
 let safeTile;
+let gameOver;
+
+let bombMarkBttn;
 
 function preload() {
   soundFormats('mp3');
   bombTileHit = loadSound("sounds/Bomb Hit");
   safeTile = loadSound("/sounds/Safe Tile");
+  gameOver = loadSound("/sounds/Game Over");
+  gameWin = loadSound("/sounds/Game Win");
+  gameTimer = new Timer(900000);
+  gameTimer.start();
 }
 
 function setup() {
-  createCanvas(400, 400);
-
   setBombLocations();
+  //gameTimer.start();
   console.log(bombLocations);
+
+  bombMarkBttn = createDiv();
+  bombMarkBttn.parent("flag-marker");
+  bombMarkBttn.mouseClicked(bombMarkClick);
+  console.log(bombMarkBttn);
 
   for (let r = 0; r < boardLength; r++) {
     let row = [];
@@ -39,6 +55,7 @@ function setup() {
 function draw() {
   //background(220);
   //board.mouseClicked(displayTile);
+  console.log(gameTimer.getRemainingTime());
 }
 
 function displayTile() {
@@ -46,27 +63,64 @@ function displayTile() {
   let xy = tile.id().split("-");
   let x = parseInt(xy[0]);
   let y = parseInt(xy[1]);
-  
-  if (bombLocations.includes(tile.id())) {
-    attemptsLeft--;
-    board[x][y].addClass("bomb-clicked");
-    bombTileHit.play();
-    
-    if (attemptsLeft <= 0) {
-      console.log("Game Over!");
-    }
+  console.log(`Total bombs marked: ${bombsMarked}`);
+
+  if (bombsMarked >= 59) {
+    console.log("Game Win!");
+    gameWin.play();
+    window.alert("Game Win!");
   } 
-  else {
-    board[x][y].addClass('tile-clicked')
-    safeTile.play();
-    let adjTiles = checkTiles(x,y);
-
-    if (adjTiles > 0) {
-      board[x][y].addClass("x" + adjTiles.toString());
+  
+  if (flagMode) {
+    board[x][y].addClass('flag-tile');
+    bombsMarked++;
+  } else {
+  
+    if (bombLocations.includes(tile.id())) {
+      attemptsLeft--;
+      board[x][y].addClass("bomb-clicked");
+      bombTileHit.play();
+      
+      if (attemptsLeft <= 0) {
+        console.log("Game Over!");
+        gameOver.play();
+        window.alert("Game Over!");
+      }
+    } 
+    else {
+      board[x][y].addClass('tile-clicked')
+      safeTile.play();
+      
+      let adjTiles = checkTiles(x,y);
+      if (adjTiles > 0) {
+        board[x][y].addClass("x" + adjTiles.toString());
+      } else {
+        exposeAdj(x-1,y-1);
+        exposeAdj(x,y-1);
+        exposeAdj(x+1,y-1);
+        
+        exposeAdj(x-1,y);
+        exposeAdj(x+1,y);
+        
+        exposeAdj(x-1,y+1);
+        exposeAdj(x,y+1);
+        exposeAdj(x+1,y+1);
+      }
     }
-
   }
+}
 
+function exposeAdj(r,c) {
+  // Function only called if the tile that was clicked is an empty tile
+
+  let s = checkTiles(r,c);
+  if (s > 0) {
+    board[r][c].addClass('tile-clicked');
+    board[r][c].addClass("x" + s.toString());
+    console.log(`S: ${s}`);
+  } else {
+    board[r][c].addClass('tile-clicked');
+  }
 }
 
 function setBombLocations() {
@@ -83,11 +137,10 @@ function setBombLocations() {
 }
 
 function checkTiles(r,c) {
-  if (!board[r][c].hasClass("tile-clicked")) {
+  /*if (!board[r][c].hasClass("tile-clicked")) {
     return;
-  }
+  } */
   
-  board[r][c].addClass("tile-clicked");
   let totalMines = 0;
 
   totalMines += isTileMine(r - 1, c - 1);
@@ -102,6 +155,7 @@ function checkTiles(r,c) {
   totalMines += isTileMine(r + 1, c + 1);
 
   console.log(`Total bombs: ${totalMines}`);
+  board[r][c].addClass("x" + totalMines.toString());
   return totalMines;
 
 }
@@ -111,5 +165,15 @@ function isTileMine(r,c) {
     return 1;
   } else {
     return 0;
+  }
+}
+
+function bombMarkClick() {
+  if (!flagMode) {
+    flagMode = true;
+    //console.log("flagMode is true!");
+  } else {
+    flagMode = false;
+    //console.log("flagMode is now false!");
   }
 }
