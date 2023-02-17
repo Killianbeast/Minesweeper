@@ -30,8 +30,8 @@ function preload() {
 }
 
 function setup() {
-  let canv = createCanvas(1000, 1000);
-  canv.position(windowWidth/2 , 50);
+  let canv = createCanvas(600, 600);
+  canv.position(windowWidth - 1000 , 50);
 
   setBombLocations();
   console.log(bombLocations);
@@ -71,12 +71,12 @@ function draw() {
   bombsLeft = 60 - bombsMarked;
   
   //background(220);
-  image(timerImg, 250 ,0);
+  image(timerImg, 0 ,0);
   textAlign(CENTER,CENTER);
   textSize(50);
   fill(255, 0, 0);
-  text(currTimeHour + ":" + currTimeSec + ":" + currTimeMS, (width/2) + 30, height - 775);
-  text(bombsLeft, (width/2) + 30, height - 675);
+  text(currTimeHour + ":" + currTimeSec + ":" + currTimeMS, 275,200);
+  text(bombsLeft, 275, 300);
 
   if (gameTimer.expired()) {
     window.alert("Game Over!");
