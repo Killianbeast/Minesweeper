@@ -1,8 +1,13 @@
-html, body {
+body {
   font-family: 'Courier New', Courier, monospace;
   display: flex;
   background-image: url("images/background.png");
   background-size: cover;
+}
+
+html {
+  display: flex;
+  flex-wrap: wrap;
 }
 
 
@@ -46,7 +51,8 @@ canvas {
   width: 100px;
   height: 100px;
 
-  display: flex;
+  /*display: flex;
+  flex-wrap: center;*/
   justify-content: center;
   content: url("images/marked-bomb.png");
 }
@@ -61,6 +67,11 @@ canvas {
 }
 
 .flag-tile {
+  content: url("images/marked-bomb.png")
+}
+
+.flag-tile-clicked {
+  background-color: red;
   content: url("images/marked-bomb.png")
 }
 

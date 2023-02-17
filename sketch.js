@@ -9,8 +9,10 @@ var bombLocations = [];
 var bombsMarked = 0;
 
 let flagMode = false;
+let gameStateOver = false;
 
 let gameTimer;
+let timerImg;
 
 let bombTileHit = new Audio('https://github.com/Killianbeast/Minesweeper/blob/master/sounds/Bomb_Hit.mp3?raw=true');
 let safeTile = new Audio('https://github.com/Killianbeast/Minesweeper/blob/master/sounds/Safe_Tile.mp3?raw=true');
@@ -20,38 +22,65 @@ let gameWin = new Audio('https://github.com/Killianbeast/Minesweeper/blob/master
 let bombMarkBttn;
 
 function preload() {
+  timerImg = loadImage('images/timer-window.png');
   gameTimer = new Timer(900000);
   gameTimer.start();
 }
 
 function setup() {
+  let canv = createCanvas(1000, 1000);
+  canv.position(windowWidth/2 , 50);
+
   setBombLocations();
-  //gameTimer.start();
   console.log(bombLocations);
 
-  bombMarkBttn = createDiv();
-  bombMarkBttn.parent("flag-marker");
-  bombMarkBttn.mouseClicked(bombMarkClick);
-  console.log(bombMarkBttn);
-
-  for (let r = 0; r < boardLength; r++) {
-    let row = [];
-    for (let c = 0; c < boardWidth; c++) {
-      tile = createDiv();
-      tile.parent("board");
-      tile.id(`${r}-${c}`);
-      tile.mouseClicked(displayTile);
-      row.push(tile);
+  
+  //gameTimer = new Timer(900000);
+  //gameTimer.start();
+    bombMarkBttn = createDiv();
+    bombMarkBttn.parent("flag-marker");
+    bombMarkBttn.mouseClicked(bombMarkClick);
+    console.log(bombMarkBttn);
+    
+    for (let r = 0; r < boardLength; r++) {
+      let row = [];
+      for (let c = 0; c < boardWidth; c++) {
+        tile = createDiv();
+        tile.parent("board");
+        tile.id(`${r}-${c}`);
+        tile.mouseClicked(displayTile);
+        row.push(tile);
+      }
+      board.push(row);
     }
-    board.push(row);
-  }
-  console.log(board);
+    console.log(board);
 }
 
 function draw() {
+  let currentTime = int(gameTimer.getRemainingTime() / 1000);
+  let currTimeHour = int(currentTime / 60);
+  let currTimeSec = currentTime % 60;
+  if (currTimeSec < 10) {
+    currTimeSec = "0" + currTimeSec;
+  }
+  let currTimeMS = gameTimer.getRemainingTime() % 1000
+  if (currTimeMS < 100) {
+    currTimeMS = "0" + currTimeMS;
+  }
+  console.log(currentTime);
+  
   //background(220);
-  //board.mouseClicked(displayTile);
-  //console.log(gameTimer.getRemainingTime());
+  image(timerImg, 250 ,0);
+  textAlign(CENTER,CENTER);
+  textSize(50);
+  fill(255, 0, 0);
+  text(currTimeHour + ":" + currTimeSec + ":" + currTimeMS, (width/2) + 30, height - 775);
+
+  if (gameTimer.expired()) {
+    window.alert("Game Over!");
+    gameOver.play();
+    noLoop();
+  }
 }
 
 function displayTile() {
@@ -81,6 +110,7 @@ function displayTile() {
         console.log("Game Over!");
         gameOver.play();
         window.alert("Game Over!");
+        noLoop();
       }
     } 
     else {
@@ -168,8 +198,10 @@ function bombMarkClick() {
   if (!flagMode) {
     flagMode = true;
     //console.log("flagMode is true!");
-    bombMarkBttn.attribute('background-color', red);
+    ////bombMarkBttn.removeAttribute('background-color');
+    bombMarkBttn.addClass("flag-tile-clicked");
   } else {
     flagMode = false;
+    bombMarkBttn.removeClass("flag-tile-clicked");
   }
 }
