@@ -172,8 +172,8 @@ function bombMarkClick() {
   if (!flagMode) {
     flagMode = true;
     //console.log("flagMode is true!");
+    bombMarkBttn.attribute('background-color', red);
   } else {
     flagMode = false;
-    //console.log("flagMode is now false!");
   }
 }
