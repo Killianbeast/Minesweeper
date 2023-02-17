@@ -20,10 +20,10 @@ let bombMarkBttn;
 
 function preload() {
   soundFormats('mp3');
-  bombTileHit = loadSound("sounds/Bomb Hit");
-  safeTile = loadSound("/sounds/Safe Tile");
-  gameOver = loadSound("/sounds/Game Over");
-  gameWin = loadSound("/sounds/Game Win");
+  bombTileHit = loadSound("sounds/Bomb_Hit");
+  safeTile = loadSound("/sounds/Safe_Tile");
+  gameOver = loadSound("/sounds/Game_Over");
+  gameWin = loadSound("/sounds/Game_Win");
   gameTimer = new Timer(900000);
   gameTimer.start();
 }
