@@ -7,6 +7,7 @@ var attemptsLeft = 3;
 var bombsTotal = 60;
 var bombLocations = [];
 var bombsMarked = 0;
+var bombMarkedLocations = [];
 
 let flagMode = false;
 let gameStateOver = false;
@@ -20,10 +21,11 @@ let gameOver = new Audio('https://github.com/Killianbeast/Minesweeper/blob/maste
 let gameWin = new Audio('https://github.com/Killianbeast/Minesweeper/blob/master/sounds/Game_Win.mp3?raw=true');
 
 let bombMarkBttn;
+let bombsLeft;
 
 function preload() {
   timerImg = loadImage('images/timer-window.png');
-  gameTimer = new Timer(900000);
+  gameTimer = new Timer(1200000);
   gameTimer.start();
 }
 
@@ -35,8 +37,6 @@ function setup() {
   console.log(bombLocations);
 
   
-  //gameTimer = new Timer(900000);
-  //gameTimer.start();
     bombMarkBttn = createDiv();
     bombMarkBttn.parent("flag-marker");
     bombMarkBttn.mouseClicked(bombMarkClick);
@@ -67,7 +67,8 @@ function draw() {
   if (currTimeMS < 100) {
     currTimeMS = "0" + currTimeMS;
   }
-  console.log(currentTime);
+
+  bombsLeft = 60 - bombsMarked;
   
   //background(220);
   image(timerImg, 250 ,0);
@@ -75,6 +76,7 @@ function draw() {
   textSize(50);
   fill(255, 0, 0);
   text(currTimeHour + ":" + currTimeSec + ":" + currTimeMS, (width/2) + 30, height - 775);
+  text(bombsLeft, (width/2) + 30, height - 675);
 
   if (gameTimer.expired()) {
     window.alert("Game Over!");
@@ -94,11 +96,19 @@ function displayTile() {
     console.log("Game Win!");
     gameWin.play();
     window.alert("Game Win!");
+    noLoop();
   } 
   
   if (flagMode) {
-    board[x][y].addClass('flag-tile');
-    bombsMarked++;
+    if (!bombMarkedLocations.includes(x.toString() + "-" + y.toString())){
+      board[x][y].addClass('flag-tile');
+      bombMarkedLocations.push(x.toString() + "-" + y.toString());
+      bombsMarked++;
+    } else {
+      board[x][y].removeClass('flag-tile');
+      bombMarkedLocations.pop(x.toString() + "-" + y.toString());
+      bombsMarked--;
+    }
   } else {
   
     if (bombLocations.includes(tile.id())) {
@@ -162,11 +172,7 @@ function setBombLocations() {
   }
 }
 
-function checkTiles(r,c) {
-  /*if (!board[r][c].hasClass("tile-clicked")) {
-    return;
-  } */
-  
+function checkTiles(r,c) {  
   let totalMines = 0;
 
   totalMines += isTileMine(r - 1, c - 1);
