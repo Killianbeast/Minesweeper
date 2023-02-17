@@ -20,10 +20,10 @@ let bombMarkBttn;
 
 function preload() {
   soundFormats('mp3');
-  bombTileHit = loadSound("sounds/Bomb_Hit");
-  safeTile = loadSound("/sounds/Safe_Tile");
-  gameOver = loadSound("/sounds/Game_Over");
-  gameWin = loadSound("/sounds/Game_Win");
+  //bombTileHit = loadSound("sounds/Bomb_Hit");
+  //safeTile = loadSound("/sounds/Safe_Tile");
+  //gameOver = loadSound("/sounds/Game_Over");
+  //gameWin = loadSound("/sounds/Game_Win");
   gameTimer = new Timer(900000);
   gameTimer.start();
 }
@@ -67,7 +67,7 @@ function displayTile() {
 
   if (bombsMarked >= 59) {
     console.log("Game Win!");
-    gameWin.play();
+    //gameWin.play();
     window.alert("Game Win!");
   } 
   
@@ -79,17 +79,17 @@ function displayTile() {
     if (bombLocations.includes(tile.id())) {
       attemptsLeft--;
       board[x][y].addClass("bomb-clicked");
-      bombTileHit.play();
+      //bombTileHit.play();
       
       if (attemptsLeft <= 0) {
         console.log("Game Over!");
-        gameOver.play();
+        //gameOver.play();
         window.alert("Game Over!");
       }
     } 
     else {
       board[x][y].addClass('tile-clicked')
-      safeTile.play();
+      //safeTile.play();
       
       let adjTiles = checkTiles(x,y);
       if (adjTiles > 0) {
