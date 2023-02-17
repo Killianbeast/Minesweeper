@@ -12,10 +12,10 @@ let flagMode = false;
 
 let gameTimer;
 
-let bombTileHit = new Audio('sounds/Bomb_hit.mp3');
-let safeTile = new Audio('sounds/Safe_tile.mp3');
-let gameOver = new Audio('sounds/Game_Over');
-let gameWin = new Audio('sounds/Game_Win');
+let bombTileHit = new Audio('https://github.com/Killianbeast/Minesweeper/blob/master/sounds/Bomb_Hit.mp3?raw=true');
+let safeTile = new Audio('https://github.com/Killianbeast/Minesweeper/blob/master/sounds/Safe_Tile.mp3?raw=true');
+let gameOver = new Audio('https://github.com/Killianbeast/Minesweeper/blob/master/sounds/Game_Over.mp3?raw=true');
+let gameWin = new Audio('https://github.com/Killianbeast/Minesweeper/blob/master/sounds/Game_Win.mp3?raw=true');
 
 let bombMarkBttn;
 
